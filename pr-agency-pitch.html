@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NARRATIVE — Public Relations Agency</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --ink: #1A1612;
+    --rust: #C4451A;
+    --warm-gray: #8C8277;
+    --light-gray: #E8E3DC;
+    --gold: #B8965A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Instrument Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 48px;
+    mix-blend-mode: multiply;
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    color: var(--ink);
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 140px 48px 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 6vw, 88px);
+    font-weight: 900;
+    line-height: 1.0;
+    color: var(--ink);
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+
+  .hero-headline em {
+    font-style: italic;
+    color: var(--rust);
+  }
+
+  .hero-sub {
+    margin-top: 32px;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--warm-gray);
+    max-width: 420px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  .hero-cta {
+    margin-top: 48px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.8s;
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 16px 36px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 2px solid var(--ink);
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--rust);
+    transform: translateX(-101%);
+    transition: transform 0.3s ease;
+    z-index: -1;
+  }
+
+  .btn-primary:hover {
+    border-color: var(--rust);
+    color: var(--cream);
+  }
+
+  .btn-primary:hover::after { transform: translateX(0); }
+
+  .btn-secondary {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    text-decoration: none;
+    border-bottom: 1px solid var(--warm-gray);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .btn-secondary:hover { color: var(--ink); border-color: var(--ink); }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-image-block {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    clip-path: polygon(12% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+
+  .hero-image-block::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 30% 60%, rgba(196, 69, 26, 0.3) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(184, 150, 90, 0.2) 0%, transparent 50%);
+  }
+
+  .hero-image-text {
+    position: absolute;
+    bottom: 80px;
+    left: 80px;
+    right: 40px;
+  }
+
+  .hero-stat {
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1s;
+  }
+
+  .hero-stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 72px;
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1;
+  }
+
+  .hero-stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245, 240, 232, 0.5);
+    margin-top: 8px;
+  }
+
+  .hero-vertical-text {
+    position: absolute;
+    top: 50%;
+    right: 40px;
+    transform: translateY(-50%) rotate(90deg);
+    transform-origin: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(245, 240, 232, 0.25);
+    white-space: nowrap;
+  }
+
+  /* TICKER */
+  .ticker {
+    background: var(--rust);
+    padding: 14px 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .ticker-inner {
+    display: flex;
+    animation: ticker 25s linear infinite;
+    white-space: nowrap;
+  }
+
+  .ticker-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cream);
+    padding: 0 48px;
+    opacity: 0.9;
+  }
+
+  .ticker-dot {
+    color: rgba(245,240,232,0.4);
+    margin-right: 48px;
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* SERVICES */
+  .services {
+    padding: 120px 48px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 80px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--light-gray);
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+
+  .section-title em { font-style: italic; }
+
+  .section-count {
+    font-family: 'Playfair Display', serif;
+    font-size: 96px;
+    font-weight: 900;
+    color: var(--light-gray);
+    line-height: 1;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--light-gray);
+  }
+
+  .service-card {
+    background: var(--cream);
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+    cursor: default;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--rust);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-card:hover { background: #F9F5EE; }
+
+  .service-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--warm-gray);
+    letter-spacing: 0.1em;
+    margin-bottom: 32px;
+  }
+
+  .service-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .service-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--warm-gray);
+  }
+
+  .service-arrow {
+    margin-top: 32px;
+    font-family: 'DM Mono', monospace;
+    font-size: 20px;
+    color: var(--rust);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.3s;
+  }
+
+  .service-card:hover .service-arrow { opacity: 1; transform: translateX(0); }
+
+  /* EDITORIAL STRIP */
+  .editorial-strip {
+    background: var(--ink);
+    padding: 100px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .editorial-left .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 24px;
+  }
+
+  .editorial-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 3vw, 42px);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 1.4;
+  }
+
+  .editorial-quote strong {
+    font-style: normal;
+    font-weight: 900;
+    color: var(--gold);
+  }
+
+  .editorial-right {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .metric-row {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(245,240,232,0.08);
+  }
+
+  .metric-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .metric-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1;
+    min-width: 140px;
+  }
+
+  .metric-number span {
+    color: var(--rust);
+  }
+
+  .metric-label {
+    font-size: 15px;
+    color: rgba(245,240,232,0.55);
+    line-height: 1.5;
+  }
+
+  /* PROCESS */
+  .process {
+    padding: 120px 48px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 80px;
+    position: relative;
+  }
+
+  .process-steps::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--light-gray), var(--light-gray), transparent);
+  }
+
+  .step {
+    padding: 0 32px;
+    position: relative;
+  }
+
+  .step-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 2px solid var(--rust);
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--rust);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .step-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .step-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--warm-gray);
+  }
+
+  /* CLIENTS */
+  .clients {
+    padding: 80px 48px;
+    background: var(--light-gray);
+    text-align: center;
+  }
+
+  .clients-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 48px;
+  }
+
+  .clients-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 64px;
+    flex-wrap: wrap;
+  }
+
+  .client-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: rgba(26,22,18,0.25);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    cursor: default;
+  }
+
+  .client-name:hover { color: rgba(26,22,18,0.6); }
+
+  /* TESTIMONIAL */
+  .testimonial {
+    padding: 120px 48px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .testimonial-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 3vw, 38px);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.5;
+    margin-bottom: 40px;
+  }
+
+  .testimonial-author {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+  }
+
+  .testimonial-author span {
+    color: var(--rust);
+    margin-right: 16px;
+  }
+
+  /* CTA SECTION */
+  .cta-section {
+    background: var(--rust);
+    padding: 120px 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 80px;
+    align-items: center;
+    max-width: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .cta-section::before {
+    content: 'NARRATIVE';
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: 240px;
+    font-weight: 900;
+    color: rgba(0,0,0,0.08);
+    right: -40px;
+    bottom: -40px;
+    line-height: 1;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .cta-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 5vw, 72px);
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1.05;
+  }
+
+  .cta-headline em { font-style: italic; font-weight: 400; }
+
+  .cta-sub {
+    margin-top: 20px;
+    font-size: 16px;
+    color: rgba(245,240,232,0.7);
+    max-width: 480px;
+    line-height: 1.6;
+  }
+
+  .btn-cta {
+    background: var(--cream);
+    color: var(--rust);
+    padding: 20px 48px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.25s;
+    border: 2px solid var(--cream);
+    flex-shrink: 0;
+  }
+
+  .btn-cta:hover {
+    background: transparent;
+    color: var(--cream);
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    padding: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cream);
+  }
+
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.3);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.4);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--cream); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 120px 24px 60px; }
+    .hero-right { height: 300px; }
+    .hero-image-block { clip-path: none; }
+    .services { padding: 80px 24px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .editorial-strip { grid-template-columns: 1fr; padding: 80px 24px; gap: 48px; }
+    .process-steps { grid-template-columns: 1fr 1fr; gap: 48px; }
+    .process-steps::before { display: none; }
+    .cta-section { grid-template-columns: 1fr; padding: 80px 24px; }
+    footer { flex-direction: column; gap: 24px; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Narrative</div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">Public Relations · Brand Strategy · Media</p>
+    <h1 class="hero-headline">
+      We shape<br>
+      <em>how the world</em><br>
+      sees you.
+    </h1>
+    <p class="hero-sub">
+      Narrative is a creative PR agency that builds indelible brand presence through editorial storytelling, strategic media placement, and cultural fluency.
+    </p>
+    <div class="hero-cta">
+      <a href="#contact" class="btn-primary">Start a Conversation</a>
+      <a href="#work" class="btn-secondary">View Our Work</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-image-block">
+      <div class="hero-image-text">
+        <div class="hero-stat">
+          <div class="hero-stat-number">200+</div>
+          <div class="hero-stat-label">Media placements per year</div>
+        </div>
+      </div>
+      <div class="hero-vertical-text">Est. 2019 · New York · London · São Paulo</div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item">Media Strategy</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Brand Storytelling</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Crisis Communications</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Executive Visibility</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Cultural Positioning</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Earned Media</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Influencer Relations</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Press Campaigns</span><span class="ticker-dot">✦</span>
+    <!-- repeat for seamless loop -->
+    <span class="ticker-item">Media Strategy</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Brand Storytelling</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Crisis Communications</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Executive Visibility</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Cultural Positioning</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Earned Media</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Influencer Relations</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Press Campaigns</span><span class="ticker-dot">✦</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-header">
+    <div>
+      <p class="section-label">What we do</p>
+      <h2 class="section-title">Our <em>Craft</em></h2>
+    </div>
+    <div class="section-count reveal">06</div>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-num">01</div>
+      <h3 class="service-title">Media Relations</h3>
+      <p class="service-desc">We cultivate deep relationships with journalists, editors, and producers across every tier of media to earn coverage that actually matters.</p>
+      <div class="service-arrow">→</div>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">02</div>
+      <h3 class="service-title">Brand Narrative</h3>
+      <p class="service-desc">We distill your story into a clear, compelling through-line that travels — from press releases to investor decks to keynote stages.</p>
+      <div class="service-arrow">→</div>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">03</div>
+      <h3 class="service-title">Crisis Management</h3>
+      <p class="service-desc">When the unexpected happens, we move fast and smart — protecting your reputation while keeping your audience's trust intact.</p>
+      <div class="service-arrow">→</div>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">04</div>
+      <h3 class="service-title">Executive Branding</h3>
+      <p class="service-desc">Positioning founders and leaders as credible voices in their field through thought leadership, speaking, and strategic media presence.</p>
+      <div class="service-arrow">→</div>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">05</div>
+      <h3 class="service-title">Launch Campaigns</h3>
+      <p class="service-desc">From product debuts to funding announcements, we build momentum — creating the kind of launch day coverage brands remember.</p>
+      <div class="service-arrow">→</div>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">06</div>
+      <h3 class="service-title">Cultural Strategy</h3>
+      <p class="service-desc">We embed your brand in the conversations that shape culture — from editorial partnerships to creator ecosystems to community-first campaigns.</p>
+      <div class="service-arrow">→</div>
+    </div>
+  </div>
+</section>
+
+<!-- EDITORIAL STRIP -->
+<div class="editorial-strip" id="work">
+  <div class="editorial-left reveal">
+    <p class="label">Our Philosophy</p>
+    <p class="editorial-quote">
+      "Most PR firms get you <strong>mentioned.</strong> We make you <strong>unmissable."</strong>
+    </p>
+  </div>
+  <div class="editorial-right">
+    <div class="metric-row reveal">
+      <div class="metric-number">94<span>%</span></div>
+      <div class="metric-label">Client retention rate<br>across 5 years of operation</div>
+    </div>
+    <div class="metric-row reveal">
+      <div class="metric-number">3.2<span>×</span></div>
+      <div class="metric-label">Average increase in earned media<br>within 90 days of engagement</div>
+    </div>
+    <div class="metric-row reveal">
+      <div class="metric-number">40<span>+</span></div>
+      <div class="metric-label">Top-tier media relationships<br>across print, digital, and broadcast</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div class="section-header">
+    <div>
+      <p class="section-label">How we work</p>
+      <h2 class="section-title">The <em>Process</em></h2>
+    </div>
+  </div>
+  <div class="process-steps">
+    <div class="step reveal">
+      <div class="step-dot"></div>
+      <div class="step-num">Step 01</div>
+      <h3 class="step-title">Immersion</h3>
+      <p class="step-desc">We go deep into your brand, category, competitors, and culture before writing a single word of strategy.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-dot"></div>
+      <div class="step-num">Step 02</div>
+      <h3 class="step-title">Positioning</h3>
+      <p class="step-desc">We define the story only you can tell — and the angle that makes the press sit up and pay attention.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-dot"></div>
+      <div class="step-num">Step 03</div>
+      <h3 class="step-title">Execution</h3>
+      <p class="step-desc">We activate the plan with precision — outreach, content, placements, and relationships all moving in sync.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-dot"></div>
+      <div class="step-num">Step 04</div>
+      <h3 class="step-title">Amplify</h3>
+      <p class="step-desc">We turn every win into momentum — repurposing coverage, building credibility, and compounding attention over time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENTS -->
+<section class="clients">
+  <p class="clients-label">Trusted by ambitious brands</p>
+  <div class="clients-logos">
+    <div class="client-name">Meridian</div>
+    <div class="client-name">Solaire</div>
+    <div class="client-name">Voss & Co.</div>
+    <div class="client-name">Halcyon</div>
+    <div class="client-name">Emberly</div>
+    <div class="client-name">Folio</div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <p class="testimonial-quote reveal">
+    "Narrative didn't just get us press — they changed how our industry perceived us. Six months in, we were the story everyone wanted to tell."
+  </p>
+  <p class="testimonial-author reveal">
+    <span>★★★★★</span>Sarah Okonkwo, Founder of Halcyon Studio
+  </p>
+</section>
+
+<!-- CTA SECTION -->
+<section class="cta-section" id="contact">
+  <div>
+    <h2 class="cta-headline reveal">Ready to own<br><em>your story?</em></h2>
+    <p class="cta-sub reveal">We work with a small number of clients at a time — so every brand gets our full attention. Let's talk about yours.</p>
+  </div>
+  <a href="mailto:hello@narrativepr.co" class="btn-cta reveal">Get in Touch</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Narrative</div>
+  <p class="footer-copy">© 2025 Narrative PR Agency. All rights reserved.</p>
+  <ul class="footer-links">
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Terms</a></li>
+    <li><a href="#">Instagram</a></li>
+    <li><a href="#">LinkedIn</a></li>
+  </ul>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
